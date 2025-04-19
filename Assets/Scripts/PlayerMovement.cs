@@ -10,51 +10,96 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] Animator anim;
 
-    private float speed = 5.0f;         // XZ movement speed
-    private float rotationSpeed = 720f; // rotation sensitivity
-
-    private float gravity = -9.81f;     // default gravity (this will change)
-    private float yVelocity = 0f;       // current y Velocity
-    private float yVelocityWhenGrounded = -4f;  // this ensures cc.isGrounded will work 
-
-    private float jumpHeight = 3.0f;    // the height of our jump in units
-    private float jumpTime = 0.5f;      // the time of our jump in seconds
+    private float speed = 5.0f;
+    private float rotationSpeed = 720f;
+    private float gravity = -9.81f;
+    private float yVelocity = 0f;
+    private float yVelocityWhenGrounded = -4f;
+    private float jumpHeight = 7.0f;    // the height of our jump in units
+    private float jumpTime = 0.8f;      // the time of our jump in seconds
     private float initialJumpVelocity;  // upward velocity for jumping (precalculated)
 
     private float jumpsAvailable = 0;
     private float jumpsMax = 2;
 
-    [SerializeField] private GameObject model;          // a reference to the model (inside the Player gameObject)
-    private float rotateToFaceMovementSpeed = 5f;       // the speed to rotate our model towards the movement vector
+    [SerializeField] private GameObject model;
+    private float rotateToFaceMovementSpeed = 5f;
 
-    [SerializeField] private Camera cam;                // a reference to the main camera
-    private float rotateToFaceAwayFromCameraSpeed = 5f; // the speed to rotate our Player to align with the camera view.
-
+    [SerializeField] private Camera cam;
+    private float rotateToFaceAwayFromCameraSpeed = 5f;
+    public GameObject player;
     public GameObject dialogueManager1;
     public GameObject dialogueManager2;
     public GameObject dialogueManager3;
-    public SuccessPopup sucessPopup;
-    //public Basepopup basePopup;
+    public SuccessPopup successPopup;
     public GameObject StartBanner;
     public GameObject CoinTipBoard;
     public GameObject EnemyTipBoard;
     public GameObject MovingPlatformTipBoard;
-    //public GameObject MovingPlatformTipBoard1;
 
-    public GameObject lava;
-    //public GameObject coin;
+    [SerializeField] private Transform spawnPoint1;
 
-    //public GameObject spikyBoard;
+    [SerializeField] private GameManager gameManager;
+    [SerializeField] private HealthBarManager healthBarManager;
+
     private void Start()
     {
-        // calculate gravity & initial jump velocity required for our jump
         float timeToApex = jumpTime / 2.0f;
         gravity = (-2 * jumpHeight) / Mathf.Pow(timeToApex, 2);
         initialJumpVelocity = Mathf.Sqrt(jumpHeight * -2 * gravity);
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (gameManager == null)
+            return;
 
+        if (other.CompareTag("StartBanner"))
+        {
+            gameManager.HideBanner();
+        }
+        if (other.CompareTag("coinTipBoard"))
+        {
+            gameManager.ShowCoinTip();
+        }
+        if (other.CompareTag("EnemyTipBoard"))
+        {
+            gameManager.ShowEnemyTip();
+        }
+        if (other.CompareTag("MovingPlatformTipBoard"))
+        {
+            gameManager.ShowMovingPlatformTip();
+        }
+        if (other.CompareTag("Finish"))
+        {
+            successPopup.Open();
+        }
+        if (other.CompareTag("lava"))
+        {
+            Debug.Log("lava touched");
+            if (healthBarManager != null)
+            {
+                healthBarManager.DamagePlayer();
+            }
+        }
+        if (other.CompareTag("levelA"))
+        {
+            gameManager.SetSpawnPoint(gameManager.spawnPoint1);
+        }
+
+        if (other.CompareTag("levelB"))
+        {
+            gameManager.SetSpawnPoint(gameManager.spawnPoint2);
+        }
+    }
     void Update()
     {
+        if (gameManager == null) return;
+
+        if (healthBarManager != null && healthBarManager.CurrentHealth <= 0)
+        {
+            RespawnPlayer();
+        }
+
         // determine XZ movement vector
         float horizInput = Input.GetAxis("Horizontal");
         float vertInput = Input.GetAxis("Vertical");
@@ -78,7 +123,7 @@ public class PlayerMovement : MonoBehaviour
         yVelocity += gravity * Time.deltaTime;
 
         // if we are on the ground and we were falling
-        if( cc.isGrounded && yVelocity < 0.0)
+        if (cc.isGrounded && yVelocity < 0.0)
         {
             yVelocity = yVelocityWhenGrounded;
             jumpsAvailable = jumpsMax;
@@ -88,12 +133,12 @@ public class PlayerMovement : MonoBehaviour
         {
             anim.SetBool("isFalling", true);
         }
-        if( yVelocity < -41)
+        if (yVelocity < -41)
         {
             yVelocity = -41;
         }
         // give upward y Velocity if we jumped
-        if(Input.GetButtonDown("Jump") && jumpsAvailable > 0)
+        if (Input.GetButtonDown("Jump") && jumpsAvailable > 0)
         {
             yVelocity = initialJumpVelocity;
             jumpsAvailable--;
@@ -107,55 +152,14 @@ public class PlayerMovement : MonoBehaviour
         movement *= Time.deltaTime; // make all movement processor independent
 
         // move the player  (using the character controller)
-        cc.Move(movement);  
+        cc.Move(movement);
 
         // rotate the player
         //Vector3 rotation = Vector3.up * rotationSpeed * Time.deltaTime * Input.GetAxis("Mouse X");
         //transform.Rotate(rotation);
     }
-    //to make the banner disappear
 
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("StartBanner"))
-        {
-            StartBanner.SetActive(false);
-            //dialogueManager.SetActive(true);
-        }
-        if (other.CompareTag("coinTipBoard"))
-        {
-            dialogueManager1.SetActive(true);
-        }
-        if (other.CompareTag("EnemyTipBoard"))
-        {
-            dialogueManager2.SetActive(true);
-        }
-        if (other.CompareTag("MovingPlatformTipBoard"))
-        {
-           dialogueManager3.SetActive(true);
-        }
-            //if (other.CompareTag("MovingPlatformTipBoard1"))
-            //{
-            //dialogueManager3.SetActive(true);
-            //}
-            if (other.CompareTag("Finish"))
-            {
-                sucessPopup.Open();
-            }
-            if (other.CompareTag("lava"))
-            {
-                Debug.Log("lava touched");
-            }
-        //if (other.CompareTag("coin"))
-        //{
-        //    Debug.Log("coin touched");
-        //    coin.SetActive(false);
-        //}
-    }
-    
-
-    // Set the rotation of the model to match the direction of the movement vector
     private void RotateModelToFaceMovement(Vector3 moveDirection)
     {
         // Determine the rotation needed to face the direction of movement (only XZ movement - ignore Y)
@@ -168,7 +172,7 @@ public class PlayerMovement : MonoBehaviour
         model.transform.rotation = Quaternion.Slerp(model.transform.rotation, newRotation, rotateToFaceMovementSpeed * Time.deltaTime);
     }
 
-   // set the player's Y rotation (yaw) to be aligned with the camera's Y rotation
+    // set the player's Y rotation (yaw) to be aligned with the camera's Y rotation
     private void RotatePlayerToFaceAwayFromCamera()
     {
         // isolate the camera's Y rotation
@@ -181,18 +185,13 @@ public class PlayerMovement : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, camRotation, rotateToFaceAwayFromCameraSpeed * Time.deltaTime);
     }
 
-
-    private void OnDrawGizmos()
+    public void RespawnPlayer()
     {
-        //// make the source 1.5 units up from the player's pivot point (at their feet)
-        //Vector3 source = transform.position + Vector3.up * 1.5f;
-
-        //// visualize the rotation of the Model
-        //Gizmos.color = Color.blue;
-        //Gizmos.DrawLine(source, source + (model.transform.forward * 3f));
-
-        //// visualize the rotation of the Player
-        //Gizmos.color = Color.red;
-        //Gizmos.DrawLine(source, source + (transform.forward * 3f));
+        if (gameManager != null)
+        {
+            gameManager.RespawnPlayer(player);
+            transform.position = spawnPoint1.position;
+            yVelocity = 0;
+        }
     }
 }

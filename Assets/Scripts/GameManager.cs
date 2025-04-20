@@ -9,6 +9,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject coinsCollectedText;
     [SerializeField] private GameObject healthLabel;
     [SerializeField] private GameObject healthBarImage;
+    //level 2 :(
+
+    //[SerializeField] private GameObject turtle;
+    //[SerializeField] private Transform enemySpawnPt;
+    //[SerializeField] private Transform StartPoint, EndPoint;
+    
+
+    
+
     public GameObject player;
     public Transform spawnPoint1;
     public Transform spawnPoint2;
@@ -63,6 +72,9 @@ public class GameManager : MonoBehaviour
     {
         if (enemyTipBoard != null)
             enemyTipBoard.SetActive(true);
+        if (healthLabel != null)
+            healthLabel.SetActive(true);
+        healthBarImage.SetActive(true);
     }
     //4. show platform tip board
     public void ShowMovingPlatformTip()

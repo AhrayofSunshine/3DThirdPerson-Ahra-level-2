@@ -2,28 +2,25 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
-    [SerializeField] GameObject enemy;
-    [SerializeField] private GameObject enemyCollider;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public GameObject TurtlePrefab;
+    public Transform[] StartPoints;
+    public Transform[] EndPoints;
+
     void Start()
     {
-        enemy.SetActive(false);
+        SpawnEnemies();
     }
 
-    // Update is called once per frame
-    void Update()
+    void SpawnEnemies()
     {
-        
-    }
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == "destroy enemy")
+        for (int i = 0; i < StartPoints.Length; i++)
         {
-            if (other.tag == "Player")
+            GameObject turtle = Instantiate(TurtlePrefab);
+            EnemyMovement movement = turtle.GetComponent<EnemyMovement>();
+            if (movement != null)
             {
-                enemy.SetActive(true);
+                movement.Setup(StartPoints[i], EndPoints[i]);
             }
         }
-
     }
 }

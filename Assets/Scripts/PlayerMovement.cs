@@ -64,6 +64,14 @@ public class PlayerMovement : MonoBehaviour
         if (other.CompareTag("EnemyTipBoard"))
         {
             gameManager.ShowEnemyTip();
+            Debug.Log("Touched");
+            healthBarManager.ResetHealth();
+
+        }
+        if (other.CompareTag("Enemy"))
+        {
+            healthBarManager.DamagePlayer();
+            Debug.Log("Enemy touched");
         }
         if (other.CompareTag("MovingPlatformTipBoard"))
         {
@@ -194,4 +202,13 @@ public class PlayerMovement : MonoBehaviour
             yVelocity = 0;
         }
     }
+
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (other.CompareTag("Enemy"))
+    //    {
+    //        healthBarManager.DamagePlayer();
+    //    }
+    //}
+
 }

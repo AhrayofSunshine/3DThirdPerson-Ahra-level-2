@@ -12,7 +12,7 @@ TagManager:
   - spikyboard
   - lava
   - coin
-  - enemy
+  - Enemy
   - destroy enemy
   - levelA
   - levelB

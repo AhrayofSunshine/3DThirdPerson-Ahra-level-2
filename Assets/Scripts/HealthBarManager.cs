@@ -54,7 +54,7 @@ public class HealthBarManager : MonoBehaviour
 
     }
 
-    void ResetHealth()
+    public void ResetHealth()
     {
         currentHealth = maxHealth;
         UpdateHealthBar();

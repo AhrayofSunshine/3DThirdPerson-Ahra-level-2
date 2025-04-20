@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using System.Collections.Generic;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private GameObject coinTipBoard;
@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     public Transform spawnPoint2;
     //pinne chyaa
     //[SerializeField] private Transform spawnPoint3;
-
+    private List<GameObject> coins = new List<GameObject>();
     private Transform currentSpawnPoint;
     public static GameManager instance;
     private void Awake()
@@ -80,5 +80,16 @@ public class GameManager : MonoBehaviour
         player.transform.position = currentSpawnPoint.position;
         player.SetActive(true);
     }
-
+    public void RegisterCoin(GameObject coin) {
+        if (!coins.Contains(coin)) { 
+            coins.Add(coin);
+        }
+    }
+    public void ResetCoins() {
+        foreach (GameObject coin in coins) {
+            if (coin != null) {
+                coin.SetActive(true);
+            }
+        }
+    }
 }

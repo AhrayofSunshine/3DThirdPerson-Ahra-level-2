@@ -8,7 +8,7 @@ public class Coin : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        GameManager.instance.RegisterCoin(this.gameObject);
     }
 
     // Update is called once per frame
@@ -22,7 +22,7 @@ public class Coin : MonoBehaviour
         if(other.tag == "Player")
         {
             Messenger<int>.Broadcast(GameEvent.COIN_COLLECTED, coinValue);
-            Destroy(this.gameObject);
+            this.gameObject.SetActive(false);
         }
     }
 }

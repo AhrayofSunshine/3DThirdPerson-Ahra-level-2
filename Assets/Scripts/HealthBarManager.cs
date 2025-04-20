@@ -50,6 +50,8 @@ public class HealthBarManager : MonoBehaviour
         currentHealth = maxHealth;
         UpdateHealthBar();
         UIManager.instance.ResetCoins();
+        GameManager.instance.ResetCoins();
+
     }
 
     void ResetHealth()

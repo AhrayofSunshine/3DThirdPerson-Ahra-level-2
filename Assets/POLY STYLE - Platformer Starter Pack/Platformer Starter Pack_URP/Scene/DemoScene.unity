@@ -17163,7 +17163,7 @@ MonoBehaviour:
   textDialogue: {fileID: 1968605118}
   lines:
   - Great!!
-  - Move to the arch to rescue the kitty!!!
+  - Move to the arch!!
   textSpeed: 0
 --- !u!114 &1268915677
 MonoBehaviour:

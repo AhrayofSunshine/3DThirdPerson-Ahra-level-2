@@ -101,8 +101,8 @@ public class GameManager : MonoBehaviour
         {
             finalHealth.SetActive(true);
         }
-        healthLabel.SetActive(true);
-        healthBarImage.SetActive(true);
+        //healthLabel.SetActive(true);
+        //healthBarImage.SetActive(true);
     }
     public void showFinalTrigger()
     {

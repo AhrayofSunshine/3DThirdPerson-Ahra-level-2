@@ -38,13 +38,13 @@ public class SettingsPopup : MonoBehaviour
         if (active) { 
             Time.timeScale = 1;
             Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            
             //Messenger.Broadcast(GameEvent.GAME_ACTIVE);
         }
         else {
             Time.timeScale = 0;
             Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            
             //Messenger.Broadcast(GameEvent.GAME_INACTIVE);
         }
     }

@@ -26,11 +26,11 @@ public class HealthBarManager : MonoBehaviour
         currentHealth--;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         UpdateHealthBar();
+        if (currentHealth == 0)
+        {
+            ResetPlayer();
+        }
 
-        //if (currentHealth <= 0)
-        //{
-        //    RespawnPlayer();
-        //}
     }
 
 

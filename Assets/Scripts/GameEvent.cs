@@ -9,4 +9,6 @@ public class GameEvent : MonoBehaviour
 
 
     public const string COIN_COLLECTED = "COIN_COLLECTED";
+    //public const string GAME_ACTIVE = "GAME_ACTIVE";
+    //public const string GAME_INACTIVE = "GAME_INACTIVE";
 }

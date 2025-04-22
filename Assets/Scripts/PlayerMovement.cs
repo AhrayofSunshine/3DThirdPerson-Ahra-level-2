@@ -10,40 +10,43 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] Animator anim;
 
-    private float speed = 5.0f;
-    private float rotationSpeed = 720f;
-    private float gravity = -9.81f;
-    private float yVelocity = 0f;
-    private float yVelocityWhenGrounded = -4f;
-    private float jumpHeight = 7.0f;    // the height of our jump in units
-    private float jumpTime = 0.8f;      // the time of our jump in seconds
+    private float speed = 5.0f;         // XZ movement speed
+    private float rotationSpeed = 720f; // rotation sensitivity
+
+    private float gravity = -9.81f;     // default gravity (this will change)
+    private float yVelocity = 0f;       // current y Velocity
+    private float yVelocityWhenGrounded = -4f;  // this ensures cc.isGrounded will work 
+
+    private float jumpHeight = 3.0f;    // the height of our jump in units
+    private float jumpTime = 0.5f;      // the time of our jump in seconds
     private float initialJumpVelocity;  // upward velocity for jumping (precalculated)
 
     private float jumpsAvailable = 0;
     private float jumpsMax = 2;
 
-    [SerializeField] private GameObject model;
-    private float rotateToFaceMovementSpeed = 5f;
+    [SerializeField] private GameObject model;          // a reference to the model (inside the Player gameObject)
+    private float rotateToFaceMovementSpeed = 5f;       // the speed to rotate our model towards the movement vector
 
-    [SerializeField] private Camera cam;
-    private float rotateToFaceAwayFromCameraSpeed = 5f;
+    [SerializeField] private Camera cam;                // a reference to the main camera
+    private float rotateToFaceAwayFromCameraSpeed = 5f; // the speed to rotate our Player to align with the camera view.
     public GameObject player;
-    public GameObject dialogueManager1;
-    public GameObject dialogueManager2;
-    public GameObject dialogueManager3;
-    public SuccessPopup successPopup;
-    public GameObject StartBanner;
-    public GameObject CoinTipBoard;
-    public GameObject EnemyTipBoard;
-    public GameObject MovingPlatformTipBoard;
+    
 
-    [SerializeField] private Transform spawnPoint1;
+ 
 
     [SerializeField] private GameManager gameManager;
     [SerializeField] private HealthBarManager healthBarManager;
+    //audio
+    public AudioSource musicSource;
+    public AudioSource sfxSource;
+    public AudioSource successSource;
+    public AudioClip popSound;
+    public AudioClip succesSound;
 
     private void Start()
     {
+        musicSource.Play();
+        // calculate gravity & initial jump velocity required for our jump
         float timeToApex = jumpTime / 2.0f;
         gravity = (-2 * jumpHeight) / Mathf.Pow(timeToApex, 2);
         initialJumpVelocity = Mathf.Sqrt(jumpHeight * -2 * gravity);
@@ -56,15 +59,42 @@ public class PlayerMovement : MonoBehaviour
         if (other.CompareTag("StartBanner"))
         {
             gameManager.HideBanner();
+            sfxSource.PlayOneShot(popSound);
+        }
+        if (other.CompareTag("RKBanner"))
+        {
+            gameManager.showFinalTrigger();
+            
+        }
+        if (other.CompareTag("Finish"))
+        {
+            gameManager.showSuccessTrigger();
+            musicSource.Stop();
+            sfxSource.PlayOneShot(succesSound);
         }
         if (other.CompareTag("coinTipBoard"))
         {
             gameManager.ShowCoinTip();
+            sfxSource.PlayOneShot(popSound);
         }
         if (other.CompareTag("EnemyTipBoard"))
         {
             gameManager.ShowEnemyTip();
+            sfxSource.PlayOneShot(popSound);
             Debug.Log("Touched");
+            healthBarManager.ResetHealth();
+
+        }
+        if (other.CompareTag("finalHealth"))
+        {
+            gameManager.showFinalHealth();
+            Debug.Log("show");
+            healthBarManager.ResetHealth();
+        }
+
+        if(other.CompareTag("collider"))
+        {
+            Debug.Log("Collider Touched");
             healthBarManager.ResetHealth();
 
         }
@@ -76,11 +106,9 @@ public class PlayerMovement : MonoBehaviour
         if (other.CompareTag("MovingPlatformTipBoard"))
         {
             gameManager.ShowMovingPlatformTip();
+            sfxSource.PlayOneShot(popSound);
         }
-        if (other.CompareTag("Finish"))
-        {
-            successPopup.Open();
-        }
+        
         if (other.CompareTag("lava"))
         {
             Debug.Log("lava touched");
@@ -89,24 +117,20 @@ public class PlayerMovement : MonoBehaviour
                 healthBarManager.DamagePlayer();
             }
         }
-        if (other.CompareTag("levelA"))
-        {
-            gameManager.SetSpawnPoint(gameManager.spawnPoint1);
-        }
+        //if (other.CompareTag("levelA"))
+        //{
+        //    gameManager.SetSpawnPoint(gameManager.spawnPoint1);
+        //}
 
-        if (other.CompareTag("levelB"))
-        {
-            gameManager.SetSpawnPoint(gameManager.spawnPoint2);
-        }
+        //if (other.CompareTag("levelB"))
+        //{
+        //    gameManager.SetSpawnPoint(gameManager.spawnPoint2);
+        //}
     }
+
+    
     void Update()
     {
-        if (gameManager == null) return;
-
-        if (healthBarManager != null && healthBarManager.CurrentHealth <= 0)
-        {
-            RespawnPlayer();
-        }
 
         // determine XZ movement vector
         float horizInput = Input.GetAxis("Horizontal");
@@ -167,7 +191,6 @@ public class PlayerMovement : MonoBehaviour
         //transform.Rotate(rotation);
     }
 
-
     private void RotateModelToFaceMovement(Vector3 moveDirection)
     {
         // Determine the rotation needed to face the direction of movement (only XZ movement - ignore Y)
@@ -193,16 +216,20 @@ public class PlayerMovement : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, camRotation, rotateToFaceAwayFromCameraSpeed * Time.deltaTime);
     }
 
-    public void RespawnPlayer()
+    
+
+    void OnCollisionEnter(Collision collision)
     {
-        if (gameManager != null)
+        if (collision.gameObject.CompareTag("Platform"))
         {
-            gameManager.RespawnPlayer(player);
-            transform.position = spawnPoint1.position;
-            yVelocity = 0;
+            if (popSound != null)
+            {
+                sfxSource.PlayOneShot(popSound);
+                Debug.Log("pfTouched");
+            }
+
         }
     }
-
     //private void OnTriggerEnter(Collider other)
     //{
     //    if (other.CompareTag("Enemy"))

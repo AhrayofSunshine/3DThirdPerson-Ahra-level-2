@@ -17,6 +17,11 @@ TagManager:
   - levelA
   - levelB
   - levelC
+  - finalHealth
+  - RKBanner
+  - platform
+  - collider
+  - respawnPoint
   layers:
   - Default
   - TransparentFX

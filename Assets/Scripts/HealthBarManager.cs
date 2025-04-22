@@ -27,24 +27,16 @@ public class HealthBarManager : MonoBehaviour
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         UpdateHealthBar();
 
-        if (currentHealth <= 0)
-        {
-            RespawnPlayer();
-        }
+        //if (currentHealth <= 0)
+        //{
+        //    RespawnPlayer();
+        //}
     }
 
-    private void RespawnPlayer()
-    {
-        if (playerMovement != null)
-        {
-            playerMovement.RespawnPlayer();
-            ResetPlayer();
-        }
-    }
+
     void ResetPlayer()
     {
-        GameManager.instance.SetSpawnPoint(GameManager.instance.spawnPoint1);
-        GameManager.instance.RespawnPlayer(player);
+
         player.SetActive(true);
 
         currentHealth = maxHealth;

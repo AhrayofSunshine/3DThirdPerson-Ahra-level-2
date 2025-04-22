@@ -4,24 +4,14 @@ using UnityEngine.UI;
 using UnityEngine.SocialPlatforms.Impl;
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] private SuccessPopup successPopup;
-    //[SerializeField] private OptionsPopup OptionsPopup;
-    //[SerializeField] private SettingsPopup SettingsPopup;
-    //private int Coin = 0;
-     public TextMeshProUGUI coin;
+
+    public TextMeshProUGUI coin;
     [SerializeField] private GameObject healthLabel;
     [SerializeField] private GameObject healthBarImage;
     private int coinCollected = 0;
     private int totalCoins = 7;
 
     public static UIManager instance;
-
-
-    public void ShowSuccessPopup()
-    {
-        successPopup.Open();
-    }
-
 
     private void Awake()
     {

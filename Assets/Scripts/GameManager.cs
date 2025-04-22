@@ -9,14 +9,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject coinsCollectedText;
     [SerializeField] private GameObject healthLabel;
     [SerializeField] private GameObject healthBarImage;
-    //level 2 :(
+    [SerializeField] private GameObject finalHealth;
+    [SerializeField] private GameObject RKTrigger;
+    [SerializeField] private GameObject successTrigger;
 
-    //[SerializeField] private GameObject turtle;
-    //[SerializeField] private Transform enemySpawnPt;
-    //[SerializeField] private Transform StartPoint, EndPoint;
-    
 
-    
 
     public GameObject player;
     public Transform spawnPoint1;
@@ -24,7 +21,7 @@ public class GameManager : MonoBehaviour
     //pinne chyaa
     //[SerializeField] private Transform spawnPoint3;
     private List<GameObject> coins = new List<GameObject>();
-    private Transform currentSpawnPoint;
+  
     public static GameManager instance;
     private void Awake()
     {
@@ -35,7 +32,7 @@ public class GameManager : MonoBehaviour
     }
 
     void Start() {
-        currentSpawnPoint = spawnPoint1;
+ 
         if (coinsCollectedText != null)
         {
             coinsCollectedText.SetActive(false);
@@ -81,17 +78,11 @@ public class GameManager : MonoBehaviour
     {
         if (movingPlatformTipBoard != null)
             movingPlatformTipBoard.SetActive(true);
+        healthLabel.SetActive(false);
+        healthBarImage.SetActive(false);
     }
 
-    public void SetSpawnPoint(Transform newSpawnPoint)
-    {
-        currentSpawnPoint = newSpawnPoint;
-    }
 
-    public void RespawnPlayer(GameObject player) {
-        player.transform.position = currentSpawnPoint.position;
-        player.SetActive(true);
-    }
     public void RegisterCoin(GameObject coin) {
         if (!coins.Contains(coin)) { 
             coins.Add(coin);
@@ -104,4 +95,31 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+    public void showFinalHealth()
+    {
+        if (finalHealth != null)
+        {
+            finalHealth.SetActive(true);
+        }
+        healthLabel.SetActive(true);
+        healthBarImage.SetActive(true);
+    }
+    public void showFinalTrigger()
+    {
+        if (RKTrigger != null)
+        {
+            RKTrigger.SetActive(true);
+        }
+        healthLabel.SetActive(false);
+        healthBarImage.SetActive(false);
+    }
+    public void showSuccessTrigger()
+    {
+        if (successTrigger != null)
+        {
+            successTrigger.SetActive(true);
+        }
+        
+    }
+
 }

@@ -21,10 +21,12 @@ public class UIManager : MonoBehaviour
             Destroy(gameObject);
 
         Messenger<int>.AddListener(GameEvent.COIN_COLLECTED, OnCoinCollected);
+       
     }
     private void OnDestroy()
     {
         Messenger<int>.RemoveListener(GameEvent.COIN_COLLECTED, OnCoinCollected);
+        
     }
     private void Start()
     {

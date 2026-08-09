@@ -39,13 +39,13 @@ public class SettingsPopup : MonoBehaviour
             Time.timeScale = 1;
             Cursor.lockState = CursorLockMode.Locked;
             
-            //Messenger.Broadcast(GameEvent.GAME_ACTIVE);
+            
         }
         else {
             Time.timeScale = 0;
             Cursor.lockState = CursorLockMode.None;
             
-            //Messenger.Broadcast(GameEvent.GAME_INACTIVE);
+           
         }
     }
     public void AudioControl() {
